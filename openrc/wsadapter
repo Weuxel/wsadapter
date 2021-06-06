@@ -1,0 +1,22 @@
+#!/sbin/openrc-run
+description="Weather Station Adapter"
+
+COMMAND="/opt/wsadapter/wsadapter"
+PIDFILE="/var/run/wsadapter"
+LOGFILE="/var/log/wsadapter"
+
+depend() {
+	use net
+}
+
+start() {
+	ebegin "Starting WSAdapter"
+	start-stop-daemon --start --background --pidfile "${PIDFILE}" --make-pidfile --stdout "${LOGFILE}" --stderr "${LOGFILE}" --exec "${COMMAND}"
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping WSAdapter"
+	start-stop-daemon --stop --pidfile "${PIDFILE}" --exec "${COMMAND}"
+	eend $?
+}
