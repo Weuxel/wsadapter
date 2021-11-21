@@ -28,15 +28,14 @@ class InterfaceHandler(BaseHTTPRequestHandler):
         if "get_data" in self.path:
             # Telegraf
             self.wfile.write(bytes(json.dumps(self.server.telegraf_data) + "\n", "utf-8"))
-        #else:
+        # else:
             # WeatherUnderground
-            #if "?" not in self.path:
+            # if "?" not in self.path:
             #    print("No \"?\" in URL, please let your URL end with a \"?\"")
             #    print("Like http://<your_server>/update?")
-            #else:
+            # else:
             #    url, data = self.path.split("?")
             #    self.server.telegraf_data = self.to_dict(data)
-
 
     def do_POST(self):
         # Ecowitt uses POST.
@@ -44,16 +43,14 @@ class InterfaceHandler(BaseHTTPRequestHandler):
         self.send_default_response()
 
         post_data = self.rfile.readline().decode("utf-8")
-        #print(post_data)
+        # print(post_data)
         self.server.telegraf_data = self.to_dict(post_data)
-
 
     def send_default_response(self):
 
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-
 
     def to_dict(self, data):
 
@@ -73,52 +70,49 @@ class InterfaceHandler(BaseHTTPRequestHandler):
 
         return telegraf_data
 
-
     def convert_values(self, telegraf_data):
 
-        telegraf_data["tempinf"]       = self.convert_fahrenheit_to_celsius(telegraf_data["tempinf"])
-        telegraf_data["tempf"]         = self.convert_fahrenheit_to_celsius(telegraf_data["tempf"])
-        telegraf_data["windspeedmph"]  = self.convert_mph_to_kmh(telegraf_data["windspeedmph"])
-        telegraf_data["windgustmph"]   = self.convert_mph_to_kmh(telegraf_data["windgustmph"])
-        telegraf_data["maxdailygust"]  = self.convert_mph_to_kmh(telegraf_data["maxdailygust"])
-        telegraf_data["baromrelin"]    = self.convert_inch_to_hpa(telegraf_data["baromrelin"])
-        telegraf_data["baromabsin"]    = self.convert_inch_to_hpa(telegraf_data["baromabsin"])
-        telegraf_data["rainratein"]    = self.convert_inch_to_mm(telegraf_data["rainratein"])
-        telegraf_data["eventrainin"]   = self.convert_inch_to_mm(telegraf_data["eventrainin"])
-        telegraf_data["hourlyrainin"]  = self.convert_inch_to_mm(telegraf_data["hourlyrainin"])
-        telegraf_data["dailyrainin"]   = self.convert_inch_to_mm(telegraf_data["dailyrainin"])
-        telegraf_data["weeklyrainin"]  = self.convert_inch_to_mm(telegraf_data["weeklyrainin"])
+        telegraf_data["tempinf"] = self.convert_fahrenheit_to_celsius(telegraf_data["tempinf"])
+        telegraf_data["tempf"] = self.convert_fahrenheit_to_celsius(telegraf_data["tempf"])
+        telegraf_data["windspeedmph"] = self.convert_mph_to_kmh(telegraf_data["windspeedmph"])
+        telegraf_data["windgustmph"] = self.convert_mph_to_kmh(telegraf_data["windgustmph"])
+        telegraf_data["maxdailygust"] = self.convert_mph_to_kmh(telegraf_data["maxdailygust"])
+        telegraf_data["baromrelin"] = self.convert_inch_to_hpa(telegraf_data["baromrelin"])
+        telegraf_data["baromabsin"] = self.convert_inch_to_hpa(telegraf_data["baromabsin"])
+        telegraf_data["rainratein"] = self.convert_inch_to_mm(telegraf_data["rainratein"])
+        telegraf_data["eventrainin"] = self.convert_inch_to_mm(telegraf_data["eventrainin"])
+        telegraf_data["hourlyrainin"] = self.convert_inch_to_mm(telegraf_data["hourlyrainin"])
+        telegraf_data["dailyrainin"] = self.convert_inch_to_mm(telegraf_data["dailyrainin"])
+        telegraf_data["weeklyrainin"] = self.convert_inch_to_mm(telegraf_data["weeklyrainin"])
         telegraf_data["monthlyrainin"] = self.convert_inch_to_mm(telegraf_data["monthlyrainin"])
-        telegraf_data["totalrainin"]   = self.convert_inch_to_mm(telegraf_data["totalrainin"])
+        telegraf_data["totalrainin"] = self.convert_inch_to_mm(telegraf_data["totalrainin"])
 
         return telegraf_data
-
 
     def rename_keys(self, telegraf_data):
 
-        telegraf_data["temp_indoor"]         = telegraf_data.pop("tempinf")
-        telegraf_data["humidity_indoor"]     = telegraf_data.pop("humidityin")
-        telegraf_data["pressure_relative"]   = telegraf_data.pop("baromrelin")
-        telegraf_data["pressure_absolute"]   = telegraf_data.pop("baromabsin")
-        telegraf_data["temp_outdoor"]        = telegraf_data.pop("tempf")
-        telegraf_data["humidity_outdoor"]    = telegraf_data.pop("humidity")
-        telegraf_data["wind_dir"]            = telegraf_data.pop("winddir")
-        telegraf_data["wind_speed"]          = telegraf_data.pop("windspeedmph")
-        telegraf_data["wind_gust"]           = telegraf_data.pop("windgustmph")
+        telegraf_data["temp_indoor"] = telegraf_data.pop("tempinf")
+        telegraf_data["humidity_indoor"] = telegraf_data.pop("humidityin")
+        telegraf_data["pressure_relative"] = telegraf_data.pop("baromrelin")
+        telegraf_data["pressure_absolute"] = telegraf_data.pop("baromabsin")
+        telegraf_data["temp_outdoor"] = telegraf_data.pop("tempf")
+        telegraf_data["humidity_outdoor"] = telegraf_data.pop("humidity")
+        telegraf_data["wind_dir"] = telegraf_data.pop("winddir")
+        telegraf_data["wind_speed"] = telegraf_data.pop("windspeedmph")
+        telegraf_data["wind_gust"] = telegraf_data.pop("windgustmph")
         telegraf_data["wind_gust_daily_max"] = telegraf_data.pop("maxdailygust")
-        telegraf_data["rain_rate"]           = telegraf_data.pop("rainratein")
-        telegraf_data["rain_event"]          = telegraf_data.pop("eventrainin")
-        telegraf_data["rain_hourly"]         = telegraf_data.pop("hourlyrainin")
-        telegraf_data["rain_daily"]          = telegraf_data.pop("dailyrainin")
-        telegraf_data["rain_weekly"]         = telegraf_data.pop("weeklyrainin")
-        telegraf_data["rain_monthly"]        = telegraf_data.pop("monthlyrainin")
-        telegraf_data["rain_total"]          = telegraf_data.pop("totalrainin")
-        telegraf_data["solar_radiation"]     = telegraf_data.pop("solarradiation")
-        telegraf_data["solar_uv"]            = telegraf_data.pop("uv")
-        telegraf_data["sensor_battery_low"]  = telegraf_data.pop("wh65batt")
+        telegraf_data["rain_rate"] = telegraf_data.pop("rainratein")
+        telegraf_data["rain_event"] = telegraf_data.pop("eventrainin")
+        telegraf_data["rain_hourly"] = telegraf_data.pop("hourlyrainin")
+        telegraf_data["rain_daily"] = telegraf_data.pop("dailyrainin")
+        telegraf_data["rain_weekly"] = telegraf_data.pop("weeklyrainin")
+        telegraf_data["rain_monthly"] = telegraf_data.pop("monthlyrainin")
+        telegraf_data["rain_total"] = telegraf_data.pop("totalrainin")
+        telegraf_data["solar_radiation"] = telegraf_data.pop("solarradiation")
+        telegraf_data["solar_uv"] = telegraf_data.pop("uv")
+        telegraf_data["sensor_battery_low"] = telegraf_data.pop("wh65batt")
 
         return telegraf_data
-
 
     def filter_keys(self, telegraf_data):
 
@@ -130,17 +124,16 @@ class InterfaceHandler(BaseHTTPRequestHandler):
 
         return telegraf_data
 
-
     def unstring(self, telegraf_data):
 
-        for key in ("temp_indoor", "temp_outdoor", "pressure_relative", "pressure_absolute", "wind_speed", "wind_gust", "wind_gust_daily_max", "rain_rate", "rain_event", "rain_hourly", "rain_daily", "rain_weekly", "rain_monthly", "rain_total", "solar_radiation"):
+        for key in ("temp_indoor", "temp_outdoor", "pressure_relative", "pressure_absolute", "wind_speed", "wind_gust", "wind_gust_daily_max", "rain_rate",
+                    "rain_event", "rain_hourly", "rain_daily", "rain_weekly", "rain_monthly", "rain_total", "solar_radiation"):
             telegraf_data[key] = float(telegraf_data[key])
 
         for key in ("humidity_indoor", "humidity_outdoor", "wind_dir", "solar_uv", "sensor_battery_low"):
             telegraf_data[key] = int(telegraf_data[key])
 
         return telegraf_data
-
 
     def convert_fahrenheit_to_celsius(self, temp_fahrenheit):
 
@@ -149,7 +142,6 @@ class InterfaceHandler(BaseHTTPRequestHandler):
 
         return format(temp_celsius, ".2f")
 
-
     def convert_mph_to_kmh(self, mph):
 
         mph = float(mph)
@@ -157,14 +149,12 @@ class InterfaceHandler(BaseHTTPRequestHandler):
 
         return format(kmh, ".2f")
 
-
     def convert_inch_to_hpa(self, inch):
 
         inch = float(inch)
         hpa = inch * 33.86
 
         return format(hpa, ".2f")
-
 
     def convert_inch_to_mm(self, inch):
 
@@ -202,7 +192,8 @@ def read_config():
 
     config = {}
     for line in [line.strip() for line in open(config_file)]:
-        if line.startswith("#"): continue
+        if line.startswith("#"):
+            continue
         if "=" in line:
             parameter, value = line.split("=")
             parameter = parameter.strip()
